@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Custom Subscribe Button</title>
+  <style>
+    body {
+      background: transparent;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #custom-subscribe-button {
+      position: relative;
+      overflow: hidden;
+      background: #121212;
+      color: #00ffe0;
+      font-size: 18px;
+      font-weight: bold;
+      padding: 14px 32px;
+      border-radius: 12px;
+      border: 2px solid #00ffe0;
+      cursor: pointer;
+      text-shadow: 0 0 6px #00ffe0;
+      box-shadow: 0 0 12px #00ffe0, 0 0 24px rgba(0, 255, 224, 0.3);
+      transition: all 0.3s ease-in-out;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      z-index: 1;
+    }
+
+    #custom-subscribe-button::before {
+      content: '';
+      position: absolute;
+      background: rgba(0, 255, 224, 0.2);
+      border-radius: 50%;
+      width: 200%;
+      height: 200%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      animation: ripplePulse 2s infinite ease-in-out;
+      z-index: 0;
+    }
+
+    @keyframes ripplePulse {
+      0% {
+        transform: translate(-50%, -50%) scale(0.3);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translate(-50%, -50%) scale(1.2);
+        opacity: 0;
+      }
+    }
+
+    #custom-subscribe-button:hover {
+      background: #1e1e1e;
+      box-shadow: 0 0 18px #00ffe0, 0 0 40px #00ffe0;
+      transform: scale(1.05);
+    }
+
+    #custom-subscribe-button:active {
+      transform: scale(0.98);
+      box-shadow: 0 0 10px #00ffe0 inset;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="paypal-button-container" style="display: none;"></div>
+  <button id="custom-subscribe-button">👾 Subscribe</button>
+
+  <script src="https://www.paypal.com/sdk/js?client-id=ASH_6AVNiol_hlhv482iRN7GsfTohxGTdnS0gYAMh1MUupiTgdbt5xihwvg709REbRTCGNNQraL3QF8F&vault=true&intent=subscription"></script>
+
+  <script>
+    let paypalActions;
+
+    paypal.Buttons({
+      style: {
+        layout: 'horizontal',
+        label: 'subscribe',
+        color: 'silver',
+        shape: 'rect'
+      },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({
+          plan_id: 'P-5KH56881BE2461231NAAIISA'
+        });
+      },
+      onApprove: function(data, actions) {
+        alert('👽 Subscription complete! ID: ' + data.subscriptionID);
+      },
+      onInit: function(data, actions) {
+        paypalActions = actions;
+      }
+    }).render('#paypal-button-container');
+
+    document.getElementById('custom-subscribe-button').addEventListener('click', function () {
+      if (paypalActions) {
+        paypalActions.click();
+      } else {
+        alert('Loading PayPal… please wait.');
+      }
+    });
+  </script>
+</body>
+</html>
