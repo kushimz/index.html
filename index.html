@@ -8,14 +8,15 @@
     body {
       background-color: #000;
       margin: 0;
-      padding: 50px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 0;
+      height: 200vh; /* Add extra height to demo floating */
     }
 
     #custom-subscribe-button {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      z-index: 9999;
       background: #00ffe0;
       border: none;
       color: black;
@@ -26,7 +27,6 @@
       cursor: pointer;
       box-shadow: 0 0 12px #00ffe0, 0 0 20px rgba(0, 255, 224, 0.4);
       transition: all 0.3s ease;
-      z-index: 10;
     }
 
     #custom-subscribe-button:hover {
@@ -44,31 +44,9 @@
   <button id="custom-subscribe-button">🚀 Subscribe</button>
   <div id="paypal-button-container"></div>
 
-  <script src="<div id="paypal-button-container-P-5KH56881BE2461231NAAIISA"></div>
-<script src="https://www.paypal.com/sdk/js?client-id=ASH_6AVNiol_hlhv482iRN7GsfTohxGTdnS0gYAMh1MUupiTgdbt5xihwvg709REbRTCGNNQraL3QF8F&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
-<script>
-  paypal.Buttons({
-      style: {
-          shape: 'rect',
-          color: 'gold',
-          layout: 'horizontal',
-          label: 'subscribe'
-      },
-      createSubscription: function(data, actions) {
-        return actions.subscription.create({
-          /* Creates the subscription */
-          plan_id: 'P-5KH56881BE2461231NAAIISA'
-        });
-      },
-      onApprove: function(data, actions) {
-        alert(data.subscriptionID); // You can add optional success message for the subscriber here
-      }
-  }).render('#paypal-button-container-P-5KH56881BE2461231NAAIISA'); // Renders the PayPal button
-</script>"></script>
+  <script src="https://www.paypal.com/sdk/js?client-id=ASH_6AVNiol_hlhv482iRN7GsfTohxGTdnS0gYAMh1MUupiTgdbt5xihwvg709REbRTCGNNQraL3QF8F&vault=true&intent=subscription"></script>
 
   <script>
-    let paypalClickHandler;
-
     paypal.Buttons({
       style: {
         layout: 'horizontal',
@@ -83,17 +61,18 @@
       },
       onApprove: function (data, actions) {
         alert('✅ Subscription created! ID: ' + data.subscriptionID);
-      },
-      onInit: function (data, actions) {
-        paypalClickHandler = actions;
       }
     }).render('#paypal-button-container');
 
     document.getElementById('custom-subscribe-button').addEventListener('click', function () {
-      if (paypalClickHandler && paypalClickHandler.click) {
-        paypalClickHandler.click();
+      const realPayPalButton = document.querySelector('#paypal-button-container iframe');
+      if (realPayPalButton) {
+        realPayPalButton.contentWindow.focus();
+        realPayPalButton.contentWindow.postMessage({
+          eventType: 'BUTTON_CLICK'
+        }, '*');
       } else {
-        alert('Please wait… PayPal is still loading.');
+        alert('🕐 Still loading PayPal… try again in a sec.');
       }
     });
   </script>
