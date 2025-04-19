@@ -1,82 +1,52 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Custom Subscribe Button</title>
+  <title>Subscribe</title>
   <style>
     body {
-      background: transparent;
+      background-color: #000;
       margin: 0;
-      padding: 20px;
+      padding: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
 
     #custom-subscribe-button {
-      position: relative;
-      overflow: hidden;
-      background: #121212;
-      color: #00ffe0;
-      font-size: 18px;
+      background: #00ffe0;
+      border: none;
+      color: black;
+      font-size: 20px;
       font-weight: bold;
-      padding: 14px 32px;
+      padding: 14px 28px;
       border-radius: 12px;
-      border: 2px solid #00ffe0;
       cursor: pointer;
-      text-shadow: 0 0 6px #00ffe0;
-      box-shadow: 0 0 12px #00ffe0, 0 0 24px rgba(0, 255, 224, 0.3);
-      transition: all 0.3s ease-in-out;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      z-index: 1;
-    }
-
-    #custom-subscribe-button::before {
-      content: '';
-      position: absolute;
-      background: rgba(0, 255, 224, 0.2);
-      border-radius: 50%;
-      width: 200%;
-      height: 200%;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0);
-      animation: ripplePulse 2s infinite ease-in-out;
-      z-index: 0;
-    }
-
-    @keyframes ripplePulse {
-      0% {
-        transform: translate(-50%, -50%) scale(0.3);
-        opacity: 0.6;
-      }
-      100% {
-        transform: translate(-50%, -50%) scale(1.2);
-        opacity: 0;
-      }
+      box-shadow: 0 0 12px #00ffe0, 0 0 20px rgba(0, 255, 224, 0.4);
+      transition: all 0.3s ease;
+      z-index: 10;
     }
 
     #custom-subscribe-button:hover {
-      background: #1e1e1e;
-      box-shadow: 0 0 18px #00ffe0, 0 0 40px #00ffe0;
       transform: scale(1.05);
+      box-shadow: 0 0 20px #00ffe0;
     }
 
-    #custom-subscribe-button:active {
-      transform: scale(0.98);
-      box-shadow: 0 0 10px #00ffe0 inset;
+    #paypal-button-container {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <div id="paypal-button-container" style="display: none;"></div>
-  <button id="custom-subscribe-button">👾 Subscribe</button>
+  <button id="custom-subscribe-button">🚀 Subscribe</button>
+  <div id="paypal-button-container"></div>
 
   <script src="https://www.paypal.com/sdk/js?client-id=ASH_6AVNiol_hlhv482iRN7GsfTohxGTdnS0gYAMh1MUupiTgdbt5xihwvg709REbRTCGNNQraL3QF8F&vault=true&intent=subscription"></script>
 
   <script>
-    let paypalActions;
+    let paypalClickHandler;
 
     paypal.Buttons({
       style: {
@@ -85,26 +55,27 @@
         color: 'silver',
         shape: 'rect'
       },
-      createSubscription: function(data, actions) {
+      createSubscription: function (data, actions) {
         return actions.subscription.create({
           plan_id: 'P-5KH56881BE2461231NAAIISA'
         });
       },
-      onApprove: function(data, actions) {
-        alert('👽 Subscription complete! ID: ' + data.subscriptionID);
+      onApprove: function (data, actions) {
+        alert('✅ Subscription created! ID: ' + data.subscriptionID);
       },
-      onInit: function(data, actions) {
-        paypalActions = actions;
+      onInit: function (data, actions) {
+        paypalClickHandler = actions;
       }
     }).render('#paypal-button-container');
 
     document.getElementById('custom-subscribe-button').addEventListener('click', function () {
-      if (paypalActions) {
-        paypalActions.click();
+      if (paypalClickHandler && paypalClickHandler.click) {
+        paypalClickHandler.click();
       } else {
-        alert('Loading PayPal… please wait.');
+        alert('Please wait… PayPal is still loading.');
       }
     });
   </script>
+
 </body>
 </html>
